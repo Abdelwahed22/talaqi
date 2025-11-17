@@ -6,36 +6,34 @@ import {
   FormBuilder,
   Validators,
   ValidatorFn,
-  AbstractControl
+  AbstractControl,
+  FormGroup
 } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { AppNavbar } from '../../shared/navbar/navbar';
+import { finalize } from 'rxjs/operators';
 import { catchError, of } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { AppNavbar } from '../../shared/navbar/navbar';
 
 @Component({
   selector: 'app-verify',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppNavbar],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, AppNavbar],
   templateUrl: './verify.html',
   styleUrls: ['./verify.css']
 })
 export class VerifyPage {
-
-  form:any
+  form: FormGroup;
   loading = false;
   error = '';
   success = '';
 
-  private apiBase = '/api'; // يعمل مع MockInterceptor
+  private apiBase = environment.apiUrl;
 
-  constructor(
-    private fb: FormBuilder,
-    private http: HttpClient,
-    private router: Router
-  ) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
     this.form = this.fb.group({
-      code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
+      code: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(6)]],
       newPassword: ['', [Validators.required, Validators.minLength(6), this.passwordStrength()]],
       confirmPassword: ['', [Validators.required]]
     }, { validators: this.matchPasswords('newPassword', 'confirmPassword') });
@@ -43,7 +41,7 @@ export class VerifyPage {
 
   get f() { return this.form.controls; }
 
-  passwordStrength(): ValidatorFn {
+  private passwordStrength(): ValidatorFn {
     return (control: AbstractControl) => {
       const v = control.value || '';
       const ok = /[A-Z]/.test(v) && /[a-z]/.test(v) && /\d/.test(v) && /[^a-zA-Z0-9]/.test(v);
@@ -51,7 +49,7 @@ export class VerifyPage {
     };
   }
 
-  matchPasswords(password: string, confirm: string): ValidatorFn {
+  private matchPasswords(password: string, confirm: string): ValidatorFn {
     return (group: AbstractControl) => {
       const pw = group.get(password)?.value;
       const cp = group.get(confirm)?.value;
@@ -66,7 +64,12 @@ export class VerifyPage {
 
     if (this.form.invalid) return;
 
-    const payload = {
+    // اقرأ الايميل من sessionStorage (set في forgot-password)
+    const email = sessionStorage.getItem('resetTarget') || '';
+
+    // fallback: لو mock والكود مخزن في sessionStorage أيضاً
+    const payload: any = {
+      email,
       code: this.f['code'].value,
       newPassword: this.f['newPassword'].value,
       confirmPassword: this.f['confirmPassword'].value
@@ -74,24 +77,28 @@ export class VerifyPage {
 
     this.loading = true;
 
-    this.http.post(`${this.apiBase}/Auth/reset-password`, payload).pipe(
+    this.http.post<any>(`${this.apiBase}/Auth/reset-password`, payload).pipe(
+      finalize(() => { this.loading = false; }),
       catchError(err => {
-        this.loading = false;
-        this.error = err?.error?.message || 'حدث خطأ أثناء العملية.';
+        if (err?.status === 0) {
+          this.error = 'لا يمكن الوصول إلى الخادم. تحقق من اتصالك.';
+        } else if (err?.error?.message) {
+          this.error = err.error.message;
+        } else {
+          this.error = err?.error ? JSON.stringify(err.error) : 'حدث خطأ أثناء العملية.';
+        }
         return of(null);
       })
-    ).subscribe((res: any) => {
-      this.loading = false;
-
+    ).subscribe(res => {
       if (!res) return;
 
-      if (!res.isSuccess) {
-        this.error = res.message;
+      if (res.isSuccess === false) {
+        this.error = res.message || 'فشل إعادة التعيين';
         return;
       }
 
-      this.success = res.message;
-      setTimeout(() => this.router.navigate(['/login']), 700);
+      this.success = res.message || 'تمت إعادة تعيين كلمة المرور بنجاح';
+      setTimeout(() => this.router.navigate(['/login']), 800);
     });
   }
 }

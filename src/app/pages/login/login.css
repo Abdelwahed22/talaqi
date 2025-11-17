@@ -56,7 +56,7 @@ input:focus {
 }
 .register-link a {
   color: #364f7c;
-  text-decoration: none;
+  text-decoration: underline;
   font-weight: bold;
 }
 .err {

@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://api.talaqi.com/api' 
+  apiUrl: 'https://localhost:7282/api', // غيّره للباك الحقيقي
+  useMock: false // لو true سيستخدم MockInterceptor
 };

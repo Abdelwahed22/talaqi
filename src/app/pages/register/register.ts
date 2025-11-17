@@ -1,3 +1,4 @@
+// src/app/pages/register/register.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -9,21 +10,17 @@ import {
   AbstractControl,
   ValidationErrors
 } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { Router, RouterModule } from '@angular/router';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { AppNavbar } from '../../shared/navbar/navbar';
-import { catchError, of } from 'rxjs';
-// import { of } from 'rxjs';
-import { delay, finalize } from 'rxjs/operators';
-
-
-
-
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, HttpClientModule, AppNavbar],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, AppNavbar  , RouterModule],
   templateUrl: './register.html',
   styleUrls: ['./register.css']
 })
@@ -32,8 +29,7 @@ export class Register {
   loading = false;
   error = '';
 
-  // غيّره حسب بيئتك لو لازم
-  private apiBase = 'https://api.talaqi.com/api';
+  private apiBase = environment.apiUrl;
 
   constructor(
     private fb: FormBuilder,
@@ -83,134 +79,53 @@ export class Register {
     };
   }
 
-//   onSubmit(): void {
-//   this.error = '';
+  onSubmit(): void {
+    this.error = '';
 
-//   // تحقق محلي أولاً
-//   if (this.form.invalid) {
-//     this.form.markAllAsTouched();
-//     return;
-//   }
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
-//   // جهّز الحمولة طبقاً لوثيقة الـ API (AuthController -> register)
-//   const payload = {
-//     firstName: this.f['firstName'].value,
-//     lastName: this.f['lastName'].value,
-//     email: this.f['email'].value,
-//     phoneNumber: this.f['phoneNumber'].value,
-//     password: this.f['password'].value,
-//     confirmPassword: this.f['confirmPassword'].value
-//   };
+    const payload = {
+      firstName: this.f['firstName'].value,
+      lastName: this.f['lastName'].value,
+      email: this.f['email'].value,
+      phoneNumber: this.f['phoneNumber'].value,
+      password: this.f['password'].value,
+      confirmPassword: this.f['confirmPassword'].value
+    };
 
-//   this.loading = true;
+    this.loading = true;
 
-//   this.http.post<any>(`${this.apiBase}/Auth/register`, payload).pipe(
-//     // عند الانتهاء من الـ observable (ناجح أو فشل) نوقف التحميل
-//     finalize(() => { this.loading = false; }),
-//     // نلتقط أخطاء الشبكة/السيرفر لمعالجتها مكانياً قبل الاشتراك
-//     catchError(err => {
-//       // نحلل الخطأ ونضع رسالة مفهومة في this.error
-//       this.error = this.parseBackendError(err);
-//       // نعيد Observable بقيمة null حتى لا يكسر الاشتراك
-//       return of(null);
-//     })
-//   ).subscribe(res => {
-//     // لو الـ observable عاد null (بسبب خطأ) نخرج
-//     if (!res) return;
-
-//     // حسب وثيقة الـ API الاستجابة تكون على شكل { isSuccess: boolean, message: string, data: ... }
-//     if (res.isSuccess === true || (res.data && res.data.accessToken)) {
-//       // تسجيل ناجح — نوجّه المستخدم إلى صفحة تسجيل الدخول
-//       this.router.navigate(['/login']);
-//     } else {
-//       // ربما رجع isSuccess=false مع رسالة أو أخطاء
-//       // نحاول عرض أفضل رسالة ممكنة
-//       if (res.message) {
-//         this.error = res.message;
-//       } else if (res.errors) {
-//         // errors قد تكون array أو object (validation model state)
-//         if (Array.isArray(res.errors)) {
-//           this.error = (res.errors as string[]).join(' - ');
-//         } else {
-//           this.error = JSON.stringify(res.errors);
-//         }
-//       } else {
-//         this.error = 'فشل التسجيل — حاول لاحقًا';
-//       }
-//     }
-//   });
-// }
-
-// /**
-//  * parseBackendError: يحاول استخراج رسالة خطأ صالحة للمستخدم
-//  * يتعامل مع:
-//  * - أخطاء الشبكة (status 0 => DNS / connection)
-//  * - استجابات JSON مع error.message أو error.errors
-//  * - حالات أخرى (HTTP status codes)
-//  */
-// private parseBackendError(err: any): string {
-//   try {
-//     // لو لا اتصال بالشبكة أو DNS fail (ERR_NAME_NOT_RESOLVED) => status 0
-//     if (err?.status === 0) {
-//       return 'لا يمكن الوصول إلى الخادم. تحقق من اتصالك أو عنوان الـ API (ERR_NAME_NOT_RESOLVED).';
-//     }
-
-//     // إذا الرجوع من السيرفر بصيغة JSON
-//     const body = err?.error;
-
-//     if (!body) {
-//       // ربما رسالة عامة من الـ HttpClient
-//       return err?.message || 'حدث خطأ غير متوقع أثناء الاتصال بالخادم.';
-//     }
-
-//     // لو السيرفر رد بصيغة متوقعة { isSuccess:false, message: "...", errors: [...] }
-//     if (typeof body === 'object') {
-//       if (body.message) return body.message;
-//       if (body.errors) {
-//         if (Array.isArray(body.errors)) return body.errors.join(' - ');
-//         // errors قد تكون كائن (مثل ModelState)
-//         return JSON.stringify(body.errors);
-//       }
-//     }
-
-//     // لو body نصي
-//     if (typeof body === 'string') return body;
-
-//     // fallback عام
-//     return 'حدث خطأ في الخادم. حاول مرة أخرى.';
-//   } catch (e) {
-//     console.error('Error parsing backend error', e, err);
-//     return 'فشل في معالجة خطأ السيرفر.';
-//   }
-// }
-
-
-  // ==========================MMMMMMMMOOOOOOKKKKKKKKKKK==========================
-  onSubmit() {
-  this.error = '';
-
-  // تحقق من صحة الفورم أولاً
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    return;
+    this.http.post<any>(`${this.apiBase}/Auth/register`, payload).pipe(
+      finalize(() => { this.loading = false; })
+    ).subscribe({
+      next: (res) => {
+        if (!res) return;
+        if (res.isSuccess === true || (res.data && res.data.accessToken)) {
+          // لو الباك يرجع توكن وعايز تسجّل دخـول تلقائياً، ممكن تخزن التوكن هنا.
+          // localStorage.setItem('accessToken', res.data.accessToken);
+          this.router.navigate(['/login']);
+        } else {
+          this.error = res.message || (res.errors ? JSON.stringify(res.errors) : 'فشل التسجيل');
+        }
+      },
+      error: (err) => {
+        console.error('Register error', err);
+        this.error = this.parseBackendError(err);
+      }
+    });
   }
 
-  // === MOCK: محاكاة طلب تسجيل للمقاصد المحلية فقط ===
-  // هذا سيمكنك من اختبار الـ redirect بدون الاتصال بالباك
-  this.loading = true;
-  of({ success: true }).pipe(delay(600)).subscribe({
-    next: (res) => {
-      this.loading = false;
-      console.log('Mock register result:', res);
-      // التوجيه لصفحة تسجيل الدخول
-      this.router.navigate(['/login']);
-    },
-    error: (err) => {
-      this.loading = false;
-      console.error('Mock register error:', err);
-      this.error = 'حدث خطأ أثناء التسجيل (mock)';
+  private parseBackendError(err: any): string {
+    if (err?.status === 0) return 'لا يمكن الوصول إلى الخادم. تأكد أن الباك يعمل أو إعدادات CORS صحيحة.';
+    if (err?.error) {
+      const body = err.error;
+      if (body.message) return body.message;
+      if (body.errors) return Array.isArray(body.errors) ? body.errors.join(' - ') : JSON.stringify(body.errors);
+      if (typeof body === 'string') return body;
     }
-  });
-}
-
+    return err?.message || 'حدث خطأ أثناء التسجيل';
+  }
 }

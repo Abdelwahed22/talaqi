@@ -1,10 +1,25 @@
+
+<!-- src/app/shared/navbar/navbar.html -->
 <nav class="navbar">
   <div class="logo">
     <img src="assets/images/logo.png" alt="Logo" />
     تلاقي
   </div>
+
   <div class="nav-buttons">
-    <button class="btn-login" routerLink="/login">دخول</button>
-    <button class="btn-register" routerLink="/register">تسجيل</button>
+    <!-- لو اليوزر موجود اظهر صورة واسم وزر خروج -->
+    <ng-container *ngIf="user; else guestButtons">
+      <button class="btn-logout" (click)="logout()">خروج</button>
+
+      <div class="profile-mini" (click)="goProfile()" title="عرض الملف الشخصي">
+        <img [src]="user.profilePictureUrl || 'assets/images/my_img.jpg'" alt="avatar" />
+        <span class="username">{{ user.firstName }} {{ user.lastName }}</span>
+      </div>
+    </ng-container>
+
+    <ng-template #guestButtons>
+      <button class="btn-login" routerLink="/login">دخول</button>
+      <button class="btn-register" routerLink="/register">تسجيل</button>
+    </ng-template>
   </div>
 </nav>
