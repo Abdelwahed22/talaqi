@@ -1,0 +1,114 @@
+.register-section {
+  padding: 40px 5%;
+  min-height: calc(100vh - 90px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.register-container {
+  display: flex;
+  flex-direction: row-reverse;  
+  gap: 40px;
+  align-items: center;
+  width: 100%;
+  max-width: 1100px;
+}
+
+
+/* الصورة */
+.register-image {
+  flex: 1 1 380px;
+  display: flex;
+  flex-direction: row-reverse ;
+  justify-content: center;
+}
+.register-image img {
+  max-width: 320px;
+  width: 100%;
+  height: auto;
+}
+
+/* الفورم */
+.register-form {
+  flex: 1 1 560px;
+  background: transparent;
+}
+
+.register-form h2 {
+  text-align: right;
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #19304A;
+}
+
+/* صف الاسمين مع تباعد أفضل */
+.form-row {
+  display: flex;
+  gap: 20px; /* المسافة بين الاسم الأول و الأخير */
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.field {
+  width: 100%;
+}
+
+.form-row .field { 
+  flex: 1 1 calc(50% - 10px); /* كل حقل ياخد نصف المساحة مع مراعاة gap */
+}
+
+/* بقية الحقول */
+.field input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd7ee;
+  box-sizing: border-box;
+  font-size: 15px;
+}
+
+.err {
+  color: #d14836;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/* terms */
+.terms {
+  margin: 12px 0 20px 0;
+  font-size: 14px;
+  color: #19304A;
+}
+
+/* زر التسجيل */
+.btn-submit {
+  width: 100%;
+  background-color: #769FCD;
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* رسالة الخطأ العامة */
+.register-link {
+  margin-top: 14px;
+  text-align: right;
+}
+
+/* توسيط "لديك حساب؟ دخول" */
+.register-link.centered {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .register-container { flex-direction: column-reverse; gap: 30px; padding: 0 12px; }
+  .form-row { gap: 12px; }
+  .form-row .field { flex-basis: 100%; }
+  .register-image img { max-width: 260px; }
+}

@@ -1,0 +1,16 @@
+{
+  "isSuccess": true,
+  "message": "تم التسجيل بنجاح",
+  "data": {
+    "accessToken": "MOCK_TOKEN",
+    "refreshToken": "MOCK_REFRESH",
+    "expiresAt": "2099-01-01T00:00:00Z",
+    "user": {
+      "id": "mock-id",
+      "firstName": "Osama",
+      "lastName": "Dev",
+      "email": "osama@example.com",
+      "phoneNumber": "+201234567890"
+    }
+  }
+}

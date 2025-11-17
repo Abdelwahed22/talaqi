@@ -1,0 +1,44 @@
+<app-navbar></app-navbar>
+
+<section class="verify-wrap" dir="rtl" lang="ar">
+
+  <div class="verify-card">
+
+    <h2>اكتب رمز التحقق</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <label class="field-label">رمز التحقق</label>
+      <input class="field-input" type="text" placeholder="أدخل رمز التحقق" formControlName="code"/>
+      <div class="err" *ngIf="f['code'].touched && f['code'].invalid">
+        <span *ngIf="f['code'].errors?.['required']">رمز التحقق مطلوب.</span>
+        <span *ngIf="f['code'].errors?.['minlength']">الرمز قصير جدًا.</span>
+      </div>
+
+      <label class="field-label">كلمة المرور الجديدة</label>
+      <input class="field-input" type="password" placeholder="أدخل كلمة المرور الجديدة" formControlName="newPassword"/>
+      <div class="err" *ngIf="f['newPassword'].touched && f['newPassword'].invalid">
+        <span *ngIf="f['newPassword'].errors?.['required']">كلمة المرور مطلوبة.</span>
+        <span *ngIf="f['newPassword'].errors?.['minlength']">يجب أن تكون 6 أحرف على الأقل.</span>
+        <span *ngIf="f['newPassword'].errors?.['weakPassword']">يجب أن تحتوي على حرف كبير وصغير ورقم ورمز.</span>
+      </div>
+
+      <label class="field-label">تأكيد كلمة المرور</label>
+      <input class="field-input" type="password" placeholder="أعد إدخال كلمة المرور" formControlName="confirmPassword"/>
+      <div class="err" *ngIf="f['confirmPassword'].touched && f['confirmPassword'].invalid">
+        <span *ngIf="f['confirmPassword'].errors?.['required']">تأكيد كلمة المرور مطلوب.</span>
+        <span *ngIf="f['confirmPassword'].errors?.['notMatch']">كلمتا المرور غير متطابقتين.</span>
+      </div>
+
+      <button class="btn-submit" type="submit" [disabled]="form.invalid || loading">
+        {{ loading ? 'جاري التحقق...' : 'التالي' }}
+      </button>
+
+    </form>
+
+    <div class="server-msg err" *ngIf="error">{{ error }}</div>
+    <div class="server-msg success" *ngIf="success">{{ success }}</div>
+
+  </div>
+
+</section>

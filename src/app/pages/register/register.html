@@ -1,0 +1,103 @@
+<app-navbar></app-navbar>
+
+<section class="register-section">
+  <div class="register-container">
+
+    <!-- الصورة — شمال -->
+    <div class="register-image">
+      <img src="assets/images/hands.png" alt="تعاون" />
+    </div>
+
+    <!-- الفورم — يمين -->
+    <div class="register-form">
+      <h2>إنشاء حساب</h2>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="field">
+            <input type="text" placeholder="الاسم الأول" formControlName="firstName" />
+            @if (f['firstName'].touched && f['firstName'].invalid) {
+              <div class="err">
+                @if (f['firstName'].errors?.['required']) { <span>الاسم الأول مطلوب.</span> }
+                @if (f['firstName'].errors?.['minlength']) { <span>الاسم قصير جدًا.</span> }
+              </div>
+            }
+          </div>
+
+          <div class="field">
+            <input type="text" placeholder="الاسم الأخير" formControlName="lastName" />
+            @if (f['lastName'].touched && f['lastName'].invalid) {
+              <div class="err">
+                @if (f['lastName'].errors?.['required']) { <span>الاسم الأخير مطلوب.</span> }
+                @if (f['lastName'].errors?.['minlength']) { <span>الاسم قصير جدًا.</span> }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="field">
+          <input type="email" placeholder="البريد الإلكتروني" formControlName="email" />
+          @if (f['email'].touched && f['email'].invalid) {
+            <div class="err">
+              @if (f['email'].errors?.['required']) { <span>البريد الإلكتروني مطلوب.</span> }
+              @if (f['email'].errors?.['email']) { <span>أدخل بريدًا إلكترونيًا صالحًا.</span> }
+            </div>
+          }
+        </div>
+
+        <div class="field">
+          <input type="tel" placeholder="رقم الهاتف" formControlName="phoneNumber" dir="rtl" />
+          @if (f['phoneNumber'].touched && f['phoneNumber'].invalid) {
+            <div class="err">
+              @if (f['phoneNumber'].errors?.['required']) { <span>رقم الهاتف مطلوب.</span> }
+              @if (f['phoneNumber'].errors?.['pattern']) { <span>أدخل رقم هاتف صالح (أرقام، قد يبدأ بـ +).</span> }
+            </div>
+          }
+        </div>
+
+        <div class="field">
+          <input type="password" placeholder="كلمة المرور" formControlName="password" />
+          @if (f['password'].touched && f['password'].invalid) {
+            <div class="err">
+              @if (f['password'].errors?.['required']) { <span>كلمة المرور مطلوبة.</span> }
+              @if (f['password'].errors?.['minlength']) { <span>كلمة المرور قصيرة (6 أحرف على الأقل).</span> }
+              @if (f['password'].errors?.['weakPassword']) { <span>كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير ورقم وحرف خاص.</span> }
+            </div>
+          }
+        </div>
+
+        <div class="field">
+          <input type="password" placeholder="تأكيد كلمة المرور" formControlName="confirmPassword" />
+          @if (f['confirmPassword'].touched && f['confirmPassword'].invalid) {
+            <div class="err">
+              @if (f['confirmPassword'].errors?.['required']) { <span>تأكيد كلمة المرور مطلوب.</span> }
+              @if (f['confirmPassword'].errors?.['notMatch']) { <span>كلمة المرور غير متطابقة.</span> }
+            </div>
+          }
+        </div>
+
+        <div class="terms">
+          <label>
+            <input type="checkbox" formControlName="acceptTerms" />
+            أوافق على شروط الاستخدام وسياسة الخصوصية
+          </label>
+
+          @if (f['acceptTerms'].touched && f['acceptTerms'].invalid) {
+            <div class="err">يجب الموافقة للاستمرار.</div>
+          }
+        </div>
+
+        <button type="submit" class="btn-submit" [disabled]="form.invalid || loading">
+          {{ loading ? 'جاري التسجيل...' : 'تسجيل' }}
+        </button>
+
+        @if (error) {
+          <div class="err">{{ error }}</div>
+        }
+
+        <p class="register-link centered">لديك حساب؟ <a routerLink="/login">دخول</a></p>
+      </form>
+    </div>
+
+  </div>
+</section>
