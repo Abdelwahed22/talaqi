@@ -1,0 +1,32 @@
+<!-- src/app/pages/profile/profile.html -->
+<app-navbar></app-navbar>
+
+<div class="container" dir="rtl">
+
+  <div *ngIf="loading" class="loading">جاري التحميل...</div>
+
+  <div *ngIf="error && !loading" class="error-box">
+    {{ error }}
+  </div>
+
+  <div *ngIf="user && !loading" class="profile-card">
+    <div class="avatar-wrapper">
+      <img [src]="user.profilePictureUrl || 'assets/images/my_img.jpg'" alt="avatar" />
+    </div>
+
+    <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+    <p class="email">{{ user.email }}</p>
+    <p class="phone">{{ user.phoneNumber }}</p>
+
+    <div class="details-box">
+      <p><strong>الدور:</strong> {{ user.role }}</p>
+      <p><strong>معرّف المستخدم:</strong> {{ user.id }}</p>
+    </div>
+
+    <!-- فوق details-box أو بعدهم -->
+<div class="profile-actions">
+  <button class="btn-edit" (click)="onEdit()">تعديل الملف الشخصي</button>
+</div>
+
+  </div>
+</div>

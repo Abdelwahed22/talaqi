@@ -1,0 +1,33 @@
+<app-navbar></app-navbar>
+
+<section class="login-container">
+  <div class="image-section">
+    <img src="/assets/images/password.png" alt="illustration" />
+  </div>
+
+  <div class="form-section">
+    <h2>تسجيل الدخول</h2>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <input type="email" placeholder="البريد الإلكتروني" formControlName="email" />
+      @if (form.get('email')?.invalid && form.get('email')?.touched) {
+      <div class="err">ادخل ايميل صحيح</div>
+      }
+
+      <input type="password" placeholder="كلمة المرور" formControlName="password" />
+      @if (form.get('password')?.invalid && form.get('password')?.touched) {
+      <div class="err">كلمة المرور مطلوبة</div>
+      }
+
+      <button class="submit-btn" type="submit" [disabled]="form.invalid">تسجيل الدخول</button>
+    </form>
+
+    <p class="register-link">
+      لا تمتلك حساباً؟ <a routerLink="/register">سجل الآن</a><br />
+      نسيت كلمة المرور؟ <a routerLink="/forgot-password">إعادة تعيين كلمة المرور</a>
+    </p>
+
+    @if (error) {
+    <div class="err">{{ error }}</div>
+    }
+  </div>
+</section>

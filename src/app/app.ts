@@ -1,12 +1,33 @@
-import { Component, signal } from '@angular/core';
+// import { Component } from '@angular/core';
+// import { CommonModule } from '@angular/common';
+// import { RouterOutlet } from '@angular/router';
+
+// @Component({
+//   selector: 'app-root',
+//   standalone: true,
+//   imports: [CommonModule, RouterOutlet],
+//   template: `<router-outlet></router-outlet>`
+// })
+// export class App {}
+
+
+// src/app/app.ts
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
+import { AppNavbar } from "./shared/navbar/navbar"; // مسار navbar اللي عملته
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, AppNavbar],
+  template: `
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  `,
+  styles: [`
+    main { padding-top: 10px; }
+  `]
 })
-export class App {
-  protected readonly title = signal('template');
-}
+export class App {}
