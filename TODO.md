@@ -1,0 +1,3 @@
+- [ ] Update navbar component to use AuthService's currentUser$ observable for reactivity
+- [ ] Update login component to use AuthService.login() method instead of direct HTTP calls
+- [ ] Test the login flow to ensure navbar updates with user profile image

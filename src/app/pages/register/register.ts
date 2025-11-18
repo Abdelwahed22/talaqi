@@ -20,7 +20,7 @@ import { AppNavbar } from '../../shared/navbar/navbar';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, AppNavbar  , RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, RouterModule],
   templateUrl: './register.html',
   styleUrls: ['./register.css']
 })

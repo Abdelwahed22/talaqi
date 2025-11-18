@@ -21,11 +21,7 @@ import { AppNavbar } from "./shared/navbar/navbar"; // مسار navbar اللي 
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, RouterOutlet, AppNavbar],
-  template: `
-    <main>
-      <router-outlet></router-outlet>
-    </main>
-  `,
+  templateUrl: './app.html',
   styles: [`
     main { padding-top: 10px; }
   `]

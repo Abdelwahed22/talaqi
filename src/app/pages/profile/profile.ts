@@ -9,7 +9,7 @@ import { Router, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, AppNavbar , RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './profile.html',
   styleUrls: ['./profile.css']
 })
