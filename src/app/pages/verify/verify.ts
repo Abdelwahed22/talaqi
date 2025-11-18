@@ -19,7 +19,7 @@ import { AppNavbar } from '../../shared/navbar/navbar';
 @Component({
   selector: 'app-verify',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, AppNavbar],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './verify.html',
   styleUrls: ['./verify.css']
 })

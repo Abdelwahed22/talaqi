@@ -34,6 +34,7 @@ import { App } from './app/app';
 import { MockInterceptor } from './app/core/interceptors/mock.interceptor';
 import { AuthInterceptor } from './app/core/interceptors/auth.interceptor';
 import { environment } from './environments/environment';
+import { routes } from './app/app.routes';
 
 bootstrapApplication(App, {
   providers: [
@@ -46,15 +47,6 @@ bootstrapApplication(App, {
     // سجّل MockInterceptor شرطياً حسب environment.useMock
     ...(environment.useMock ? [{ provide: HTTP_INTERCEPTORS, useClass: MockInterceptor, multi: true }] : []),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    provideRouter([
-      { path: '', loadComponent: () => import('./app/pages/home/home').then(m => m.Home) },
-      { path: 'login', loadComponent: () => import('./app/pages/login/login').then(m => m.Login) },
-      { path: 'register', loadComponent: () => import('./app/pages/register/register').then(m => m.Register) },
-      { path: 'forgot-password', loadComponent: () => import('./app/pages/forgot-password/forgot-password').then(m => m.ForgotPassword) },
-      { path: 'verify', loadComponent: () => import('./app/pages/verify/verify').then(m => m.VerifyPage) },
-      { path: 'profile', loadComponent: () => import('./app/pages/profile/profile').then(m => m.ProfilePage) },
-      {path: 'profile/edit', loadComponent: () => import('./app/pages/profile/edit').then(m => m.ProfileEditPage) },
-      { path: '**', redirectTo: '' }
-    ])
+    provideRouter(routes)
   ]
 }).catch(err => console.error(err));

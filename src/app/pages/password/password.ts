@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-password',
-  imports: [AppNavbar , RouterModule],
+  imports: [RouterModule],
   templateUrl: './password.html',
   styleUrl: './password.css',
 })

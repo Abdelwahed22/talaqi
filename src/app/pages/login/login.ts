@@ -100,15 +100,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
-import { AppNavbar } from '../../shared/navbar/navbar';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, AppNavbar, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css'],
 })
@@ -117,9 +115,7 @@ export class Login {
   loading = false;
   error = '';
 
-  private apiBase = environment.apiUrl;
-
-  constructor(private fb: FormBuilder, private router: Router, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -138,55 +134,36 @@ export class Login {
       return;
     }
 
-    const payload = {
-      email: this.f['email'].value,
-      password: this.f['password'].value,
-    };
+    const email = this.f['email'].value;
+    const password = this.f['password'].value;
 
     this.loading = true;
 
-    this.http
-      .post<any>(`${this.apiBase}/Auth/login`, payload)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (res) => {
-          if (!res) {
-            this.error = 'استجابة غير متوقعة من الخادم';
-            return;
-          }
+    this.authService.login(email, password).pipe(
+      finalize(() => {
+        this.loading = false;
+      })
+    ).subscribe({
+      next: (res) => {
+        if (!res) {
+          this.error = 'استجابة غير متوقعة من الخادم';
+          return;
+        }
 
-          if (res.isSuccess === false) {
-            this.error = res.message || 'فشل تسجيل الدخول';
-            return;
-          }
+        if (res.isSuccess === false) {
+          this.error = res.message || 'فشل تسجيل الدخول';
+          return;
+        }
 
-          // successful login
-          const data = res.data ?? res;
+        // go to home
+        this.router.navigate(['/']);
+      },
 
-          if (data?.user) {
-            localStorage.setItem('user', JSON.stringify(data.user));
-          }
-
-          if (data?.accessToken) {
-            localStorage.setItem('accessToken', data.accessToken);
-          }
-          if (data?.refreshToken) {
-            localStorage.setItem('refreshToken', data.refreshToken);
-          }
-
-          // go to home
-          this.router.navigate(['/']);
-        },
-
-        error: (err) => {
-          console.error('Login error', err);
-          this.error = this.parseBackendError(err);
-        },
-      });
+      error: (err) => {
+        console.error('Login error', err);
+        this.error = this.parseBackendError(err);
+      },
+    });
   }
 
   private parseBackendError(err: any): string {
