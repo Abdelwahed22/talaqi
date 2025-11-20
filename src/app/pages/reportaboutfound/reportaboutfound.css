@@ -1,0 +1,169 @@
+/* استيراد الخط */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+
+.report-found-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* لضمان ظهوره في الأعلى قليلاً */
+    padding: 3rem 1rem;
+    background-color: #f8f9fa; /* خلفية الصفحة رمادي فاتح */
+    min-height: 100vh;
+    font-family: 'Cairo', sans-serif;
+    direction: rtl;
+}
+
+.form-container {
+    background-color: #fff;
+    padding: 2.5rem 2rem;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 800px; /* عرض أكبر قليلاً ليستوعب الحقلين بجوار بعض */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.form-container h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: #19304A;
+    font-weight: 800;
+}
+
+.form-container p {
+    text-align: center;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* تنسيق المجموعات (صف يحتوي على حقلين) */
+.row-group {
+    display: flex;
+    gap: 1.5rem;
+}
+
+/* في الموبايل نجعلهم تحت بعض */
+@media (max-width: 768px) {
+    .row-group {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1; /* يأخذ مساحة متساوية */
+}
+
+label {
+    font-weight: 700;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+input[type="text"], input[type="date"], textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0; /* حدود أفتح قليلاً */
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    background-color: #fcfcfc;
+    font-family: 'Cairo', sans-serif;
+}
+
+input:focus, textarea:focus {
+    border-color: #364F7C;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(54, 79, 124, 0.1);
+    background-color: #fff;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* منطقة التحميل */
+.upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    color: #777;
+    background: #fafbfe;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
+}
+
+.upload-area:hover {
+    border-color: #364F7C;
+    background: #f0f4f8;
+}
+
+.upload-area span {
+    color: #364F7C;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.preview-img {
+    max-width: 100%;
+    max-height: 200px;
+    margin-top: 10px;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+button {
+    background-color: #0095f6; /* اللون الأزرق الفاتح كما في الصورة */
+    /* لو عايز نفس لون الكود القديم خليه: #364F7C */
+    color: white;
+    font-weight: 700;
+    border: none;
+    border-radius: 2rem; /* زر دائري الحواف */
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    width: 200px; /* عرض ثابت للزر */
+    align-self: center; /* توسيط الزر */
+}
+
+button:hover {
+    background-color: #007acb;
+}

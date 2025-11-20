@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 @Component({
   selector: 'app-homeafterregister',
@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './homeafterregister.css',
 })
 export class Homeafterregister {
-
+currentYear = signal(new Date().getFullYear());
 }
