@@ -1,179 +1,37 @@
-
-/* 🧭 قسم الهيرو */
 .hero {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* صورة تحت النص */
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 20px 20px;
-}
-
-.hero-content {
-  max-width: 600px;
-  margin-bottom: 30px;
-}
-
-.hero h1 {
-  font-size: 40px;
-  font-weight: bold;
-  color: #19304A;
-  margin-bottom: 20px;
-}
-
-.hero p {
-  font-size: 18px;
-  color: #19304A;
-  margin-bottom: 50px;
-  line-height: 1.6;
-}
-
-/* 🎯 أزرار القسم الرئيسي */
-.hero-buttons {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  padding: 40px 20px;
   gap: 30px;
 }
 
-.btn-primary {
-  background-color: #769FCD;
-  color: #F7FBFC;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 24px;
-  transition: 0.3s;
+.hero-content {
+  max-width: 900px;
+  text-align: center;
 }
 
-.btn-primary:hover {
-  background-color: #6786BE;
-  transform: translateY(-2px);
+.hero-buttons { display:flex; gap:12px; justify-content:center; margin:16px 0; }
+
+.search-inline {
+  margin-top: 8px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
 }
 
-.btn-outline {
-  background-color: transparent;
-  color: #19304A;
-  border: 2px solid #769FCD;
-  padding: 12px 30px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 24px;
-  transition: 0.3s;
+.search-inline select, .search-inline input {
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  min-width:200px;
 }
 
-.btn-outline:hover {
-  background-color: #769FCD;
-  color: #F7FBFC;
-  transform: translateY(-2px);
-}
-
-/* 🖼 الصورة */
 .hero-image img {
-  width: 250px;
+  width: 360px;
   max-width: 90%;
-  margin-top: 5px;
-}
-
-/* 📱💻 -------------- Responsive Design -------------- */
-
-/* الشاشات المتوسطة (تابلت) */
-@media (max-width: 992px) {
-  .navbar {
-    flex-direction: column;
-    text-align: center;
-    padding: 20px;
-  }
-
-  .logo {
-    font-size: 28px;
-  }
-
-  .logo img {
-    width: 60px;
-    height: 60px;
-  }
-
-  .nav-buttons {
-    margin-top: 10px;
-  }
-
-  .hero h1 {
-    font-size: 32px;
-  }
-
-  .hero p {
-    font-size: 16px;
-    margin-bottom: 35px;
-  }
-
-  .hero-buttons {
-    gap: 20px;
-  }
-
-  .btn-primary,
-  .btn-outline {
-    font-size: 20px;
-    padding: 10px 24px;
-  }
-}
-
-/* الشاشات الصغيرة (موبايل) */
-@media (max-width: 576px) {
-  .navbar {
-    padding: 15px;
-  }
-
-  .logo {
-    flex-direction: column;
-    gap: 5px;
-    font-size: 25px;
-  }
-
-  .logo img {
-    width: 55px;
-    height: 55px;
-  }
-
-  .nav-buttons {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .btn-login,
-  .btn-register {
-    width: 100%;
-    font-size: 18px;
-  }
-
-  .hero {
-    padding: 40px 15px;
-  }
-
-  .hero h1 {
-    font-size: 26px;
-  }
-
-  .hero p {
-    font-size: 15px;
-    margin-bottom: 30px;
-  }
-
-  .hero-buttons {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .btn-primary,
-  .btn-outline {
-    font-size: 18px;
-    padding: 10px 20px;
-    width: 100%;
-  }
-
-  .hero-image img {
-    width: 200px;
-    margin-top: 25px;
-  }
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }

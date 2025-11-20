@@ -1,33 +1,59 @@
-<!-- src/app/pages/profile/profile.html -->
-<!-- remove all naves from all pages and keep it at app.html only -->
-<!-- <app-navbar></app-navbar> -->
+<app-navbar></app-navbar>
 
-<div class="container" dir="rtl">
+<main class="profile-page" dir="rtl">
+  <div class="container">
 
-  <div *ngIf="loading" class="loading">جاري التحميل...</div>
+    <section *ngIf="user && !loading" class="profile-card">
 
-  <div *ngIf="error && !loading" class="error-box">
-    {{ error }}
+      <!-- Avatar فقط (بدون غلاف) -->
+      <div class="avatar-wrapper">
+        <img
+          class="avatar"
+          [src]="user.profilePictureUrl || 'assets/images/my_img.jpg'"
+          alt="avatar"
+          loading="lazy"
+        />
+
+        <button class="btn-change-avatar" (click)="triggerFileInput()">
+          <span>تغيير الصورة</span>
+        </button>
+      </div>
+
+      <h1 class="display-name">{{ user.firstName }} {{ user.lastName }}</h1>
+      <p class="sub">{{ user.email }}</p>
+      <p class="sub muted">{{ user.phoneNumber || "—" }}</p>
+
+      <div class="badges-row">
+        <span class="info-pill">المفقودات: {{ user.lostItemsCount ?? 0 }}</span>
+        <span class="info-pill">الموجودات: {{ user.foundItemsCount ?? 0 }}</span>
+      </div>
+
+      <div class="details-card">
+        <div class="details-row">
+          <div><strong>معرّف المستخدم:</strong></div>
+          <div class="mono">
+            {{ shortId(user.id) }}
+            <button class="copy-btn" (click)="copyId(user.id)">نسخ</button>
+          </div>
+        </div>
+
+        <div class="details-row" *ngIf="user.createdAt">
+          <div><strong>تاريخ الإنشاء:</strong></div>
+          <div>{{ user.createdAt | date: "medium" }}</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary" (click)="goEdit()">تعديل الملف الشخصي</button>
+        <button class="btn-ghost" (click)="logout()">تسجيل الخروج</button>
+      </div>
+
+      <input type="file" #fileInput accept="image/*" style="display:none" (change)="onFileSelected($event)" />
+
+      <div id="toast-container" aria-live="polite" class="toast-container"></div>
+    </section>
+
+    <div *ngIf="loading" class="loading">جاري التحميل...</div>
+    <div *ngIf="error && !loading" class="error-box">{{ error }}</div>
   </div>
-
-  <div *ngIf="user && !loading" class="profile-card">
-    <div class="avatar-wrapper">
-      <img [src]="user.profilePictureUrl || 'assets/images/my_img.jpg'" alt="avatar" />
-    </div>
-
-    <h2>{{ user.firstName }} {{ user.lastName }}</h2>
-    <p class="email">{{ user.email }}</p>
-    <p class="phone">{{ user.phoneNumber }}</p>
-
-    <div class="details-box">
-      <p><strong>الدور:</strong> {{ user.role }}</p>
-      <p><strong>معرّف المستخدم:</strong> {{ user.id }}</p>
-    </div>
-
-    <!-- فوق details-box أو بعدهم -->
-<div class="profile-actions">
-  <button class="btn-edit" (click)="onEdit()">تعديل الملف الشخصي</button>
-</div>
-
-  </div>
-</div>
+</main>

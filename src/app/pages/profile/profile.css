@@ -1,80 +1,166 @@
-/* src/app/pages/profile/profile.css */
-
-.container {
-  max-width: 480px;
-  margin: 40px auto;
-  text-align: center;
-  padding: 20px;
-}
-
-.loading {
-  font-size: 20px;
-  margin-top: 40px;
-  color: #364F7C;
-}
-
-.error-box {
-  background: #ffdddd;
-  color: #a10000;
-  padding: 15px;
-  border-radius: 8px;
-  font-size: 18px;
-  margin-top: 40px;
+/* Main container */
+.profile-page .container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 16px;
 }
 
 .profile-card {
-  background: white;
-  padding: 32px;
-  border-radius: 20px;
-  box-shadow: 0 0 10px #0000001b;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(25, 40, 70, 0.08);
+  padding: 32px 20px;
+  text-align: center;
 }
 
+/* Avatar only (no cover) */
 .avatar-wrapper {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-  overflow: hidden;
-  border: 3px solid #6786BE;
-}
-
-.avatar-wrapper img {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
+  border: 6px solid #fff;
+  box-shadow: 0 8px 20px rgba(43, 74, 115, 0.12);
+  background: #e9eef6;
 }
 
-h2 {
-  margin: 10px 0;
-  font-size: 28px;
-  color: #364F7C;
+/* Change picture button */
+.btn-change-avatar {
+  background: #fff;
+  color: #2b4a73;
+  border: 1px solid rgba(43, 74, 115, 0.2);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+.btn-change-avatar:hover {
+  background: #e9eef6;
 }
 
-.email, .phone {
-  font-size: 18px;
-  margin-top: 4px;
-  color: #555;
+/* User info */
+.display-name {
+  font-size: 24px;
+  color: #2b4a73;
+  margin-bottom: 6px;
+  font-weight: 700;
 }
 
-.details-box {
-  background: #f7f7f7;
-  padding: 18px;
-  border-radius: 12px;
-  margin-top: 20px;
+.sub {
+  color: #5d6f86;
+  margin: 0;
+}
+.muted {
+  opacity: 0.7;
+}
+
+/* Badges */
+.badges-row {
+  margin: 15px 0 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.info-pill {
+  background: #eef5ff;
+  color: #2b4a73;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+/* Details section */
+.details-card {
+  margin: 20px auto;
+  max-width: 650px;
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 20px;
   text-align: right;
 }
 
-.details-box p {
-  margin: 6px 0;
-  font-size: 17px;
+.details-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
 }
 
-.profile-actions { margin-top: 18px; }
-.btn-edit {
-  background: #6786BE;
-  color: white;
-  padding: 10px 18px;
-  border-radius: 10px;
+.mono {
+  font-family: "Courier New", monospace;
+  display: flex;
+  gap: 8px;
+}
+
+/* Copy button */
+.copy-btn {
+  background: #fff;
+  border: 1px solid rgba(43, 74, 115, 0.25);
+  padding: 4px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+.copy-btn:hover {
+  background: #eef4ff;
+}
+
+/* Actions */
+.actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn-primary {
+  background: #2b4a73;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
+}
+.btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(43, 74, 115, 0.25);
+  color: #2b4a73;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+}
+.toast {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(25, 40, 70, 0.15);
+  margin-top: 8px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: 0.2s ease;
+}
+.toast.toast-show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.toast-error {
+  background: #ffe2e2;
+  color: #8b1e1e;
 }

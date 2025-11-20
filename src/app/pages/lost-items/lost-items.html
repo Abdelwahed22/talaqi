@@ -1,0 +1,96 @@
+<app-navbar></app-navbar>
+
+<div class="container lost-items-page">
+
+  <h2 class="page-title">العناصر المفقودة</h2>
+
+  <!-- Search + Category (مركّزين + مظهر حديث) -->
+  <form [formGroup]="form" (ngSubmit)="onSearchButtonClicked()" class="controls center-controls" role="search" aria-label="بحث عن العناصر">
+    <div class="control-row">
+      <!-- زر البحث -->
+      <button type="submit" class="btn primary btn-search" aria-label="بحث">بحث</button>
+
+      <!-- حقل البحث -->
+      <input
+        class="search-input"
+        type="text"
+        formControlName="q"
+        placeholder="ابحث بكلمة (مثلاً: كلب)"
+        aria-label="بحث بالكلمة"
+      />
+
+      <!-- الفئة (dropdown) -->
+      <div class="select-wrap" aria-hidden="false">
+        <select formControlName="category" (change)="onCategoryChanged()" aria-label="اختار الفئة">
+          <option *ngFor="let c of categoryOptions" [value]="c.value">{{ c.label }}</option>
+        </select>
+        <span class="select-arrow">▾</span>
+      </div>
+    </div>
+  </form>
+
+  <!-- Loading -->
+  <div *ngIf="loading()" class="loading">جاري التحميل... ⏳</div>
+
+  <!-- Error -->
+  <div *ngIf="error()" class="error">{{ error() }}</div>
+
+  <!-- Results -->
+  <div class="cards-grid" *ngIf="items && items.length">
+
+    <article class="card" *ngFor="let item of items">
+
+      <!-- Image -->
+      <div class="card-left">
+        <img
+          class="thumb"
+          [src]="imageFor(item)"
+          loading="lazy"
+          alt="{{ item?.title || 'صورة العنصر' }}"
+          (error)="onImgError($event)"
+        />
+      </div>
+
+      <!-- Info -->
+      <div class="card-right">
+
+        <h3 class="title">{{ item?.title }}</h3>
+
+        <div class="meta-row">
+          <span class="category">{{ item?.category }}</span>
+
+          <span class="status" [class.found]="isFound(item)">
+            {{ isFound(item) ? 'عُثر عليه' : 'مفقود' }}
+          </span>
+        </div>
+
+        <p class="desc">{{ item?.description }}</p>
+
+        <div class="bottom-row">
+          <small class="date">{{ formatDate(item?.createdAt ?? item?.dateLost ?? item?.dateFound) }}</small>
+
+          <div class="actions">
+            <a class="btn outline" [routerLink]="['/lost-items', item?.id]" aria-label="عرض التفاصيل">
+              عرض التفاصيل
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </article>
+  </div>
+
+  <!-- Empty -->
+  <div *ngIf="!loading() && (!items || items.length === 0)" class="empty">
+    لا توجد عناصر مطابقة
+  </div>
+
+  <!-- Paging -->
+  <div class="pager" *ngIf="total > pageSize">
+    <button class="btn" (click)="prevPage()" [disabled]="pageNumber === 1">السابق</button>
+    <span>صفحة {{ pageNumber }} من {{ math.max(1, math.ceil(total / pageSize)) }}</span>
+    <button class="btn" (click)="nextPage()" [disabled]="pageNumber >= math.ceil(total / pageSize)">التالي</button>
+  </div>
+
+</div>
