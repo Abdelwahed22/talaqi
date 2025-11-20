@@ -1,0 +1,60 @@
+<section class="report-found-section">
+    <div class="form-container">
+        <h2>الإبلاغ عن عنصر تم العثور عليه</h2>
+        <p>املأ النموذج أدناه لمساعدتنا في إعادة العنصر إلى صاحبه.</p>
+
+        <form id="foundItemForm">
+            
+            <div class="row-group">
+                <div class="form-group">
+                    <label for="item-name">اسم العنصر</label>
+                    <input type="text" id="item-name" placeholder="مثال: محفظة، هاتف، مفاتيح">
+                </div>
+                <div class="form-group">
+                    <label for="location">مكان العثور عليه</label>
+                    <input type="text" id="location" placeholder="مثال: حديقة عامة، مركز تجاري">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">وصف العنصر</label>
+                <textarea id="description" placeholder="صف العنصر بالتفصيل (اللون، العلامة التجارية، أي علامات مميزة)"></textarea>
+            </div>
+
+            <div class="row-group">
+                <div class="form-group">
+                    <label for="date-found">تاريخ العثور</label>
+                    <input type="date" id="date-found">
+                </div>
+                <div class="form-group">
+                    <label for="contact-info">معلومات الاتصال</label>
+                    <input type="text" id="contact-info" placeholder="رقم الهاتف أو البريد الإلكتروني">
+                </div>
+            </div>
+
+            <label>تحميل صور</label>
+            <div class="upload-area" (click)="triggerFileInput(fileInput)">
+                <input #fileInput type="file" id="fileInput" accept="image/png, image/jpeg" hidden (change)="onFileSelected($event)">
+                
+                @if (!previewUrl) {
+                    <div class="upload-placeholder">
+                        <i class="fa-regular fa-image fa-2x mb-2"></i>
+                        <p id="uploadText"><span>اسحب وأفلت</span> أو انقر للتحميل</p>
+                        <p style="font-size: 0.8rem;">PNG, JPG حتى 5MB</p>
+                    </div>
+                }
+
+                @if (previewUrl) {
+                    <img [src]="previewUrl" class="preview-img" alt="Preview">
+                }
+            </div>
+
+            <div class="checkbox">
+                <input type="checkbox" id="legalAgreement">
+                <label for="legalAgreement">أقر أن جميع المعلومات والصور المقدمة صحيحة وأتحمل المسؤولية القانونية عنها</label>
+            </div>
+
+            <button type="submit">إرسال البلاغ</button>
+        </form>
+    </div>
+</section>

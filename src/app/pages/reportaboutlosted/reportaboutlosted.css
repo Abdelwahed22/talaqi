@@ -1,0 +1,106 @@
+/* استيراد الخط */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+
+.report-section {
+    font-family: 'Cairo', sans-serif;
+    padding: 60px 0;
+    background-color: #ffffff;
+    direction: rtl;
+    min-height: 90vh; /* لضمان ارتفاع مناسب */
+    display: flex;
+    align-items: center;
+}
+
+/* --- النصوص --- */
+.form-title {
+    font-weight: 800;
+    color: #19304A;
+    margin-bottom: 10px;
+    font-size: 2rem;
+}
+
+.form-subtitle {
+    color: #6c757d;
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+}
+
+/* --- حقول الإدخال --- */
+.custom-input {
+    border-radius: 10px; /* حواف دائرية */
+    border: 1px solid #e0e0e0;
+    padding: 12px 15px;
+    background-color: #ffffff; /* لون خلفية الحقل */
+    transition: all 0.3s ease;
+    color: #19304A;
+    font-size: 0.95rem;
+}
+
+.custom-input::placeholder {
+    color: #a0a0a0; /* لون رمادي فاتح للنص المؤقت */
+}
+
+.custom-input:focus {
+    box-shadow: 0 0 0 3px rgba(118, 159, 205, 0.2);
+    border-color: #769FCD;
+}
+
+/* --- الـ Checkbox --- */
+.form-check-input {
+    border-color: #19304A;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: #769FCD;
+    border-color: #769FCD;
+}
+
+.form-check-label {
+    font-size: 0.85rem;
+    color: #555;
+    cursor: pointer;
+}
+
+/* --- زر الإرسال --- */
+.btn-submit {
+    background-color: #3fa9f5; /* اللون الأزرق السماوي كما في الصورة */
+    /* أو استخدم لون الهوية الخاص بك: #769FCD */
+    color: white;
+    font-weight: 700;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #3595d8;
+    transform: translateY(-2px);
+}
+
+/* --- الصورة التوضيحية --- */
+.illustration-img {
+    max-width: 100%;
+    height: auto;
+    /* إضافة خلفية مربعة زرقاء فاتحة خلف الصورة كما في التصميم */
+    background-color: #dff6ff; 
+    padding: 20px;
+    border-radius: 0; /* في الصورة الخلفية مربعة */
+    /* إذا كانت الصورة نفسها تحتوي على الخلفية، يمكنك إزالة السطرين السابقين */
+}
+
+/* استجابة للشاشات الصغيرة */
+@media (max-width: 991px) {
+    .form-title {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+    .form-subtitle {
+        text-align: center;
+    }
+    .illustration-img {
+        margin-top: 40px;
+        max-width: 80%;
+    }
+}

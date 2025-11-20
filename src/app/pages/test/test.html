@@ -1,0 +1,51 @@
+<section class="what-lost-section">
+    <div class="container">
+        
+        <div class="text-center mb-5">
+            <h2 class="main-title">فقدت ماذا...؟</h2>
+        </div>
+
+        <div class="row g-4">
+            
+            <div class="col-lg-8 order-lg-1 order-1">
+                
+                <div class="row g-3 justify-content-center">
+                    @for (cat of categories; track cat.id) {
+                        <div class="col-md-4 col-sm-6">
+                            <div class="category-card">
+                                <div class="icon-circle">
+                                    <i [class]="cat.icon"></i>
+                                </div>
+                                <h3>{{ cat.title }}</h3>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="found-something-banner mt-5">
+                    <h3>هل عثرت على أي شيء؟</h3>
+                    <p>Are you find anything?</p>
+                    <button class="btn btn-found">سجل ما وجدته الآن</button>
+                </div>
+            </div>
+
+            <div class="col-lg-4 order-lg-2 order-2">
+                <div class="recent-sidebar">
+                    <h4 class="sidebar-title">المفقود مؤخراً</h4>
+                    <div class="sidebar-line"></div>
+
+                    <div class="recent-list">
+                        @for (item of recentItems; track item.title) {
+                            <div class="recent-item">
+                                <h5>{{ item.title }}</h5>
+                                <p>{{ item.desc }}</p>
+                            </div>
+                        }
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

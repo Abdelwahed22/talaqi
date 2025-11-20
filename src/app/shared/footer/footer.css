@@ -1,0 +1,113 @@
+/* استدعاء الخط */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap');
+
+:host {
+    display: block;
+    margin-top: auto; /* لجعل الفوتر ينزل للأسفل دائماً */
+    font-family: 'Cairo', sans-serif;
+}
+
+/* --- تصميم الفوتر العام --- */
+.footer {
+    background-color: #19304A;
+    color: #f8f9fa;
+    padding: 20px 0;
+    border-top: 1px solid rgba(118, 159, 205, 0.2);
+    position: relative;
+    z-index: 10;
+}
+
+/* --- تنسيق النصوص والحقوق --- */
+.copyright-content {
+    font-size: 0.95rem;
+    color: #b0c4de;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* توسيط في الموبايل */
+    gap: 5px;
+}
+
+@media (min-width: 768px) {
+    .copyright-content {
+        justify-content: flex-start; /* يمين في الشاشات الكبيرة */
+    }
+}
+
+.brand-text {
+    font-weight: 800;
+    color: #769FCD;
+}
+
+.divider {
+    color: rgba(255, 255, 255, 0.2);
+    margin: 0 5px;
+}
+
+/* --- حاوية التواصل (الحل السحري للمحاذاة) --- */
+.social-wrapper {
+    display: flex;
+    align-items: center;    /* يضمن توسط العناصر رأسياً */
+    justify-content: center; /* توسيط أفقي للموبايل */
+    gap: 12px;
+}
+
+@media (min-width: 768px) {
+    .social-wrapper {
+        justify-content: flex-end; /* يسار في الشاشات الكبيرة */
+    }
+}
+
+/* نص "تابعنا عبر" */
+.follow-us {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.75);
+    font-weight: 400;
+    padding-top: 2px; /* ضبط دقيق جداً للمحاذاة البصرية */
+}
+
+/* --- الأيقونات --- */
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    transform: translateY(-3px);
+    color: white;
+    border-color: transparent;
+}
+
+.social-link.facebook:hover {
+    background-color: #1877F2;
+    box-shadow: 0 0 15px rgba(24, 119, 242, 0.4);
+}
+
+/* --- الموبايل --- */
+@media (max-width: 768px) {
+    .footer {
+        padding: 25px 0;
+    }
+    
+    .copyright-content {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .divider {
+        display: none;
+    }
+    
+    .social-wrapper {
+        margin-top: 15px;
+    }
+}
