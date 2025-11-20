@@ -14,13 +14,13 @@
 // src/app/app.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { AppNavbar } from "./shared/navbar/navbar"; // مسار navbar اللي عملته
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, AppNavbar],
+  imports: [CommonModule, RouterOutlet, AppNavbar,RouterModule],
   template: `
     <main>
       <router-outlet></router-outlet>

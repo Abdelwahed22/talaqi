@@ -1,137 +1,85 @@
-// import { Injectable } from '@angular/core';
-// import { HttpClient } from '@angular/common/http';
-// import { environment } from '../../../environments/environment';
-// import { Observable, map, tap } from 'rxjs';
-
-// interface ApiResponse<T = any> {
-//   isSuccess: boolean;
-//   message: string;
-//   data: T | null;
-//   errors?: any;
-// }
-
-// @Injectable({ providedIn: 'root' })
-// export class AuthService {
-//   private base = `${environment.apiUrl}/Auth`;
-
-//   constructor(private http: HttpClient) {}
-
-//   login(payload: { email: string; password: string }): Observable<void> {
-//     return this.http.post<ApiResponse<any>>(`${this.base}/login`, payload).pipe(
-//       map(res => {
-//         if (!res.isSuccess) throw new Error(res.message || 'Login failed');
-//         return res.data;
-//       }),
-//       tap(data => {
-//         const token = data?.accessToken;
-//         if (token) localStorage.setItem('access_token', token);
-//         if (data?.refreshToken) localStorage.setItem('refresh_token', data.refreshToken);
-//       }),
-//       map(() => void 0)
-//     );
-//   }
-
-//   logout() {
-//     localStorage.removeItem('access_token');
-//     localStorage.removeItem('refresh_token');
-//   }
-
-//   getToken(): string | null {
-//     return localStorage.getItem('access_token');
-//   }
-
-//   isAuthenticated(): boolean {
-//     return !!this.getToken();
-//   }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // src/app/core/services/auth.service.ts
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { AppUser } from '../models/user.model';
 import { environment } from '../../../environments/environment';
 
+export interface AppUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber?: string;
+  profilePictureUrl?: string | null;
+  role?: string;
+}
+
 interface AuthResponse {
-  isSuccess: boolean;
-  data?: { accessToken?: string; refreshToken?: string; expiresAt?: string; user?: AppUser };
+  isSuccess?: boolean;
+  data?: { accessToken?: string; refreshToken?: string; expiresAt?: string; user?: AppUser } | any;
   message?: string;
+  errors?: any;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private tokenKey = 'accessToken';
+  private userKey = 'user';
   private currentUserSubject = new BehaviorSubject<AppUser | null>(this.readUserFromStorage());
   public currentUser$ = this.currentUserSubject.asObservable();
-
-  private tokenKey = 'talaqi_access_token';
-  private userKey = 'talaqi_user';
 
   constructor(private http: HttpClient, private router: Router) {}
 
   private readUserFromStorage(): AppUser | null {
     try {
       const raw = localStorage.getItem(this.userKey);
-      return raw ? JSON.parse(raw) as AppUser : null;
+      return raw ? (JSON.parse(raw) as AppUser) : null;
     } catch {
       return null;
     }
-  }
-
-  get isAuthenticated(): boolean {
-    return !!localStorage.getItem(this.tokenKey) && !!this.currentUserSubject.value;
-  }
-
-  login(email: string, password: string) : Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/Auth/login`, { email, password })
-      .pipe(
-        tap(res => {
-          if (res?.data?.accessToken) {
-            localStorage.setItem(this.tokenKey, res.data.accessToken);
-            localStorage.setItem(this.userKey, JSON.stringify(res.data.user || null));
-            this.currentUserSubject.next(res.data.user || null);
-          }
-        })
-      );
-  }
-
-  logout() {
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.userKey);
-    this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
   }
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
 
-  // ممكن تضيف refresh token هنا لاحقًا
+  isAuthenticated(): boolean {
+    return !!this.getToken() && !!this.currentUserSubject.value;
+  }
+
+  // يقوم فقط بالـ HTTP POST ويرجع الـ observable
+  login(email: string, password: string) {
+return this.http.post<AuthResponse>(`${environment.apiUrl}/api/Auth/login`, { email, password });
+  }
+
+  // بعد نجاح login، احفظ بيانات الـ auth (توكن + user)
+  saveAuthDataFromResponse(res: AuthResponse | any) {
+    const data = (res && res.data) ? res.data : res;
+    const token = data?.accessToken ?? data?.token ?? null;
+    if (token) {
+      localStorage.setItem(this.tokenKey, token);
+    }
+    if (data?.refreshToken) {
+      localStorage.setItem('refreshToken', data.refreshToken);
+    }
+    if (data?.user) {
+      localStorage.setItem(this.userKey, JSON.stringify(data.user));
+      this.currentUserSubject.next(data.user);
+    }
+  }
+
+  setCurrentUser(user: AppUser | null) {
+    if (user) localStorage.setItem(this.userKey, JSON.stringify(user));
+    else localStorage.removeItem(this.userKey);
+    this.currentUserSubject.next(user);
+  }
+
+  logout() {
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
+    localStorage.removeItem('refreshToken');
+    this.currentUserSubject.next(null);
+    this.router.navigate(['/login']);
+  }
 }

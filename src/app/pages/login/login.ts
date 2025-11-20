@@ -1,209 +1,102 @@
-// // src/app/pages/login/login.ts
-// import { Component } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
-// import { Router, RouterModule } from '@angular/router';
-// import { HttpClient, HttpClientModule } from '@angular/common/http';
-// import { finalize } from 'rxjs/operators';
-// import { of } from 'rxjs';
-// import { environment } from '../../../environments/environment';
-// import { AppNavbar } from "../../shared/navbar/navbar";
-
-// @Component({
-//   selector: 'app-login',
-//   standalone: true,
-//   imports: [CommonModule, ReactiveFormsModule, HttpClientModule, AppNavbar , RouterModule],
-//   templateUrl: './login.html',
-//   styleUrls: ['./login.css']
-// })
-// export class Login {
-//   form: FormGroup;
-//   loading = false;
-//   error = '';
-
-//   private apiBase = environment.apiUrl;
-
-//   constructor(
-//     private fb: FormBuilder,
-//     private router: Router,
-//     private http: HttpClient
-//   ) {
-//     // إنشاء الفورم داخل الـ constructor (تجنّب "used before init")
-//     this.form = this.fb.group({
-//       email: ['', [Validators.required, Validators.email]],
-//       password: ['', [Validators.required, Validators.minLength(6)]]
-//     });
-//   }
-
-//   get f() { return this.form.controls; }
-
-//   onSubmit() {
-//     this.error = '';
-
-//     if (this.form.invalid) {
-//       this.form.markAllAsTouched();
-//       return;
-//     }
-
-//     const payload = {
-//       email: this.f['email'].value,
-//       password: this.f['password'].value
-//     };
-
-//     this.loading = true;
-
-//     this.http.post<any>(`${this.apiBase}/Auth/login`, payload).pipe(
-//       finalize(() => { this.loading = false; })
-//     ).subscribe({
-//       next: (res) => {
-//         if (!res) {
-//           this.error = 'استجابة غير متوقعة من الخادم';
-//           return;
-//         }
-
-//         if (res.isSuccess === false) {
-//           this.error = res.message || 'فشل تسجيل الدخول';
-//           return;
-//         }
-
-//         // نفترض أن res.data يحتوي على accessToken, refreshToken
-//         const data = res.data ?? res;
-//         if (data?.accessToken) {
-//           localStorage.setItem('accessToken', data.accessToken);
-//           if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
-//         }
-
-//         // توجه للصفحة الرئيسية
-//         this.router.navigate(['/']);
-//       },
-//       error: (err) => {
-//         console.error('Login error', err);
-//         this.error = this.parseBackendError(err);
-//       }
-//     });
-//   }
-
-//   private parseBackendError(err: any): string {
-//     if (err?.status === 0) return 'لا يمكن الوصول إلى الخادم. تأكد أن الباك يعمل أو إعدادات CORS صحيحة.';
-//     if (err?.error) {
-//       const body = err.error;
-//       if (body.message) return body.message;
-//       if (body.errors) return Array.isArray(body.errors) ? body.errors.join(' - ') : JSON.stringify(body.errors);
-//       if (typeof body === 'string') return body;
-//     }
-//     return err?.message || 'حدث خطأ أثناء تسجيل الدخول';
-//   }
-// }
-
-// src/app/pages/login/login.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Router, RouterModule, ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
+import { AuthService } from '../../core/services/auth.service';
 import { AppNavbar } from '../../shared/navbar/navbar';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, AppNavbar, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, AppNavbar, RouterModule, RouterLink ],
   templateUrl: './login.html',
-  styleUrls: ['./login.css'],
+  styleUrls: ['./login.css']
 })
 export class Login {
-  form: FormGroup;
+  // لا تهيئ الفورم هنا — فقط عرف المتغيّر
+  form!: FormGroup;
+
   loading = false;
   error = '';
+  private returnUrl = '/';
 
-  private apiBase = environment.apiUrl;
-
-  constructor(private fb: FormBuilder, private router: Router, private http: HttpClient) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private auth: AuthService
+  ) {
+    // هيئ الفورم داخل الconstructor بعد أن يكون fb موجود
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
-  }
 
-  get f() {
-    return this.form.controls;
+    const q = this.route.snapshot.queryParams['returnUrl'];
+    if (q && typeof q === 'string') this.returnUrl = q;
   }
 
   onSubmit() {
+    console.log('onSubmit called');
     this.error = '';
 
     if (this.form.invalid) {
+      console.log('form invalid', this.form.value);
       this.form.markAllAsTouched();
       return;
     }
 
-    const payload = {
-      email: this.f['email'].value,
-      password: this.f['password'].value,
-    };
+    // استخرج القيم وتأكد أنها ليست null/undefined
+    const emailVal = this.form.get('email')?.value as string | undefined;
+    const passVal = this.form.get('password')?.value as string | undefined;
 
+    if (!emailVal || !passVal) {
+      this.error = 'ادخل البريد وكلمة المرور';
+      return;
+    }
+
+    // الآن نمرر string صريحة إلى auth.login
     this.loading = true;
-
-    this.http
-      .post<any>(`${this.apiBase}/Auth/login`, payload)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
+    this.auth.login(emailVal, passVal)
+      .pipe(finalize(() => { this.loading = false; }))
       .subscribe({
-        next: (res) => {
-          if (!res) {
-            this.error = 'استجابة غير متوقعة من الخادم';
+        next: (res: any) => {
+          console.log('login response raw:', res);
+
+          const root = res ?? {};
+          const data = root.data ?? root;
+          const token =
+            data?.accessToken ??
+            data?.access_token ??
+            data?.token ??
+            root?.token ??
+            root?.accessToken;
+
+          if (!token) {
+            this.error = root?.message || data?.message || 'استجابة غير متوقعة من الخادم';
             return;
           }
 
-          if (res.isSuccess === false) {
-            this.error = res.message || 'فشل تسجيل الدخول';
-            return;
-          }
-
-          // successful login
-          const data = res.data ?? res;
-
-          if (data?.user) {
-            localStorage.setItem('user', JSON.stringify(data.user));
-          }
-
-          if (data?.accessToken) {
-            localStorage.setItem('accessToken', data.accessToken);
-          }
-          if (data?.refreshToken) {
-            localStorage.setItem('refreshToken', data.refreshToken);
-          }
-
-          // go to home
-          this.router.navigate(['/']);
+          this.auth.saveAuthDataFromResponse(res);
+          this.router.navigateByUrl(this.returnUrl || '/').catch(err => console.error('nav error', err));
         },
-
         error: (err) => {
-          console.error('Login error', err);
+          console.error('login http error', err);
           this.error = this.parseBackendError(err);
-        },
+        }
       });
   }
 
   private parseBackendError(err: any): string {
-    if (err?.status === 0) {
-      return 'لا يمكن الوصول إلى الخادم. تأكد من تشغيل الباك أو إعدادات CORS.';
-    }
-
-    const body = err?.error;
-
+    if (!err) return 'حدث خطأ غير معروف';
+    if (err.status === 0) return 'لا يمكن الوصول إلى الخادم. تحقق من تشغيل الباك أو CORS.';
+    const body = err.error;
     if (body) {
       if (body.message) return body.message;
-      if (body.errors) {
-        return Array.isArray(body.errors) ? body.errors.join(' - ') : JSON.stringify(body.errors);
-      }
+      if (body.errors) return Array.isArray(body.errors) ? body.errors.join(' - ') : JSON.stringify(body.errors);
       if (typeof body === 'string') return body;
     }
-
-    return err?.message || 'حدث خطأ أثناء تسجيل الدخول';
+    return err.message || JSON.stringify(err);
   }
 }

@@ -1,22 +1,46 @@
-
 <!-- src/app/shared/navbar/navbar.html -->
-<nav class="navbar">
+<nav class="navbar" role="navigation" aria-label="Main navigation">
   <div class="logo">
     <img src="assets/images/logo.png" alt="Logo" />
     تلاقي
   </div>
 
   <div class="nav-buttons">
-    <!-- لو اليوزر موجود اظهر صورة واسم وزر خروج -->
+    <!-- إذا المستخدم موجود -->
     <ng-container *ngIf="user; else guestButtons">
-      <button class="btn-logout" (click)="logout()">خروج</button>
+      <!-- زر خروج صغير (ستايل عصري) -->
+      <button class="btn-logout" (click)="logout()" title="تسجيل الخروج">خروج</button>
 
-      <div class="profile-mini" (click)="goProfile()" title="عرض الملف الشخصي">
-        <img [src]="user.profilePictureUrl || 'assets/images/my_img.jpg'" alt="avatar" />
-        <span class="username">{{ user.firstName }} {{ user.lastName }}</span>
-      </div>
+      <!-- trigger button (قابل للفوكاس) -->
+      <button
+        id="profile-trigger"
+        class="profile-trigger"
+        (click)="toggleDropdown()"
+        aria-haspopup="menu"
+        [attr.aria-expanded]="dropdownOpen"
+        [attr.aria-controls]="'profile-menu'">
+        <img [src]="user?.profilePictureUrl || 'assets/images/my_img.jpg'" alt="avatar" />
+        <span class="username">{{ user?.firstName }} {{ user?.lastName }}</span>
+      </button>
+
+      <!-- dropdown menu -->
+      <ul
+        id="profile-menu"
+        class="dropdown"
+        *ngIf="dropdownOpen"
+        role="menu"
+        aria-labelledby="profile-trigger">
+        <li role="none"><button role="menuitem" (click)="goProfile()">الملف الشخصي</button></li>
+        <li role="none"><button role="menuitem" (click)="navigateToEdit()">تعديل البيانات</button></li>
+        <!-- <li role="none"><button role="menuitem" (click)="triggerFileInput()">تغيير الصورة</button></li> -->
+        <li role="none"><button role="menuitem" class="danger" (click)="logout()">تسجيل الخروج</button></li>
+      </ul>
+
+      <!-- hidden file input -->
+      <input type="file" #fileInput accept="image/*" style="display:none" (change)="onFileSelected($event)" />
     </ng-container>
 
+    <!-- إذا لا يوجد مستخدم -->
     <ng-template #guestButtons>
       <button class="btn-login" routerLink="/login">دخول</button>
       <button class="btn-register" routerLink="/register">تسجيل</button>

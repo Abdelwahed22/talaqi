@@ -9,16 +9,16 @@
     <h2>تسجيل الدخول</h2>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <input type="email" placeholder="البريد الإلكتروني" formControlName="email" />
-      @if (form.get('email')?.invalid && form.get('email')?.touched) {
-      <div class="err">ادخل ايميل صحيح</div>
-      }
+      <div class="err" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+        ادخل ايميل صحيح
+      </div>
 
       <input type="password" placeholder="كلمة المرور" formControlName="password" />
-      @if (form.get('password')?.invalid && form.get('password')?.touched) {
-      <div class="err">كلمة المرور مطلوبة</div>
-      }
+      <div class="err" *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+        كلمة المرور مطلوبة (6 أحرف على الأقل)
+      </div>
 
-      <button class="submit-btn" type="submit" [disabled]="form.invalid">تسجيل الدخول</button>
+      <button class="submit-btn" type="submit" [disabled]="form.invalid || loading">تسجيل الدخول</button>
     </form>
 
     <p class="register-link">
@@ -26,8 +26,6 @@
       نسيت كلمة المرور؟ <a routerLink="/forgot-password">إعادة تعيين كلمة المرور</a>
     </p>
 
-    @if (error) {
-    <div class="err">{{ error }}</div>
-    }
+    <div class="err" *ngIf="error">{{ error }}</div>
   </div>
 </section>
