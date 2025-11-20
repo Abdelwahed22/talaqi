@@ -11,7 +11,7 @@ import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-profile-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppNavbar,RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './edit.html',
   styleUrls: ['./edit.css']
 })

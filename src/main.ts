@@ -7,6 +7,7 @@ import { App } from './app/app';
 import { AuthInterceptor } from './app/core/interceptors/auth.interceptor';
 import { AuthGuard } from './app/core/guards/auth.guard';
 import { environment } from './environments/environment';
+import { routes } from './app/app.routes';
 
 bootstrapApplication(App, {
   providers: [

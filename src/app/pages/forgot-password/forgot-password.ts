@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, AppNavbar  , RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, RouterModule],
   templateUrl: './forgot-password.html',
   styleUrls: ['./forgot-password.css']
 })
