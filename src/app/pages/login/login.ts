@@ -9,7 +9,7 @@ import { AppNavbar } from '../../shared/navbar/navbar';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppNavbar, RouterModule, RouterLink ],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, RouterLink ],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
@@ -47,39 +47,23 @@ export class Login {
       return;
     }
 
-    // استخرج القيم وتأكد أنها ليست null/undefined
-    const emailVal = this.form.get('email')?.value as string | undefined;
-    const passVal = this.form.get('password')?.value as string | undefined;
+    // Extract values from form
+    const credentials = {
+      email: this.form.get('email')?.value,
+      password: this.form.get('password')?.value
+    };
 
-    if (!emailVal || !passVal) {
-      this.error = 'ادخل البريد وكلمة المرور';
-      return;
-    }
-
-    // الآن نمرر string صريحة إلى auth.login
     this.loading = true;
-    this.auth.login(emailVal, passVal)
+    this.auth.login(credentials)
       .pipe(finalize(() => { this.loading = false; }))
       .subscribe({
-        next: (res: any) => {
-          console.log('login response raw:', res);
-
-          const root = res ?? {};
-          const data = root.data ?? root;
-          const token =
-            data?.accessToken ??
-            data?.access_token ??
-            data?.token ??
-            root?.token ??
-            root?.accessToken;
-
-          if (!token) {
-            this.error = root?.message || data?.message || 'استجابة غير متوقعة من الخادم';
-            return;
+        next: (res) => {
+          console.log('login response:', res);
+          if (res.isSuccess) {
+            this.router.navigate(['/homeafterregister']).catch(err => console.error('nav error', err));
+          } else {
+            this.error = res.message || 'Login failed';
           }
-
-          this.auth.saveAuthDataFromResponse(res);
-          this.router.navigateByUrl(this.returnUrl || '/').catch(err => console.error('nav error', err));
         },
         error: (err) => {
           console.error('login http error', err);

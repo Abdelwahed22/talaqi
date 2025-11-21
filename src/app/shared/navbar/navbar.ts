@@ -24,14 +24,12 @@ export class AppNavbar implements OnInit, OnDestroy {
   constructor(private router: Router, private auth: AuthService, private http: HttpClient) {}
 
   ngOnInit(): void {
-    console.log('[Navbar] init - loading user from storage');
-    this.loadUser();
+    console.log('[Navbar] init - subscribing to currentUser$');
 
-    // subscribe to auth changes if available
+    // Fully reactive: subscribe to currentUser$ observable
     this.subs.add(
       this.auth.currentUser$.subscribe((u) => {
-        if (u) this.user = u;
-        else this.loadUser(); // fallback if auth cleared
+        this.user = u;
       })
     );
 
@@ -45,16 +43,6 @@ export class AppNavbar implements OnInit, OnDestroy {
     this.subs.unsubscribe();
     document.removeEventListener('keydown', this.onKeyDown);
     document.removeEventListener('click', this.onDocClick);
-  }
-
-  private loadUser() {
-    try {
-      const raw = localStorage.getItem('user');
-      this.user = raw ? (JSON.parse(raw) as AppUser) : null;
-    } catch (ex) {
-      console.error('[Navbar] loadUser parse error', ex);
-      this.user = null;
-    }
   }
 
   toggleDropdown() {
@@ -74,6 +62,15 @@ export class AppNavbar implements OnInit, OnDestroy {
   logout() {
     this.dropdownOpen = false;
     this.auth.logout();
+  }
+
+  goHome() {
+    // If user is logged in, go to homeafterregister; otherwise go to home
+    if (this.user) {
+      this.router.navigate(['/homeafterregister']);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
   triggerFileInput() {

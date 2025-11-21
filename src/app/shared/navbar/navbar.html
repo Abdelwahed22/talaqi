@@ -1,6 +1,6 @@
 <!-- src/app/shared/navbar/navbar.html -->
 <nav class="navbar" role="navigation" aria-label="Main navigation">
-  <div class="logo">
+  <div class="logo" (click)="goHome()" style="cursor: pointer;">
     <img src="assets/images/logo.png" alt="Logo" />
     تلاقي
   </div>
@@ -19,8 +19,8 @@
         aria-haspopup="menu"
         [attr.aria-expanded]="dropdownOpen"
         [attr.aria-controls]="'profile-menu'">
-        <img [src]="user?.profilePictureUrl || 'assets/images/my_img.jpg'" alt="avatar" />
-        <span class="username">{{ user?.firstName }} {{ user?.lastName }}</span>
+        <img [src]="user.profilePictureUrl || 'assets/images/my_img.jpg'" alt="avatar" />
+        <span class="username">{{ user.firstName }} {{ user.lastName }}</span>
       </button>
 
       <!-- dropdown menu -->

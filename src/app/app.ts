@@ -17,12 +17,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { AppNavbar } from "./shared/navbar/navbar"; // مسار navbar اللي عملته
 import { Footer } from './shared/footer/footer';
-import { Reportaboutlosted } from './pages/reportaboutlosted/reportaboutlosted';
+import { Toasts } from './shared/toasts/toasts';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, AppNavbar,Footer,Reportaboutlosted,RouterModule],
+  imports: [CommonModule, RouterOutlet, AppNavbar, Footer, RouterModule, Toasts],
   templateUrl: './app.html',
   styles: [`
     main { padding-top: 10px; }

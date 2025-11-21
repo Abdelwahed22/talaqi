@@ -1,85 +1,110 @@
-// src/app/core/services/auth.service.ts
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { ApiResponse, AuthResponse, LoginRequest, RegisterRequest, User } from '../models/user.model';
 
-export interface AppUser {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber?: string;
-  profilePictureUrl?: string | null;
-  role?: string;
-}
-
-interface AuthResponse {
-  isSuccess?: boolean;
-  data?: { accessToken?: string; refreshToken?: string; expiresAt?: string; user?: AppUser } | any;
-  message?: string;
-  errors?: any;
-}
+// تأكد إن الـ Interfaces دي موجودة في user.model.ts زي ما اتفقنا
+// لو مش موجودة هناك، ممكن تسيب تعريف AppUser هنا مؤقتاً
+export interface AppUser extends User {} 
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  // 1. Dependencies (Modern Injection)
+  private http = inject(HttpClient);
+  private router = inject(Router);
+  
+  // 2. Configuration
+  private apiUrl = `${environment.apiUrl}/auth`; // Now will be https://localhost:7282/api/auth
   private tokenKey = 'accessToken';
   private userKey = 'user';
+
+  // 3. State Management (Reactive)
+  // بنقرأ المستخدم من الـ Storage أول ما التطبيق يفتح
   private currentUserSubject = new BehaviorSubject<AppUser | null>(this.readUserFromStorage());
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  // --- Authentication Methods ---
 
-  private readUserFromStorage(): AppUser | null {
-    try {
-      const raw = localStorage.getItem(this.userKey);
-      return raw ? (JSON.parse(raw) as AppUser) : null;
-    } catch {
-      return null;
-    }
+  // تسجيل الدخول
+  login(credentials: LoginRequest): Observable<ApiResponse<AuthResponse>> {
+    return this.http.post<ApiResponse<AuthResponse>>(`${this.apiUrl}/login`, credentials)
+      .pipe(
+        // ميزة الـ tap: بتنفذ كود جانبي من غير ما تأثر على الداتا اللي راجعة للـ Component
+        tap(response => {
+          if (response.isSuccess && response.data) {
+            this.saveAuthData(response.data);
+          }
+        })
+      );
+  }
+
+  // إنشاء حساب جديد
+  register(data: RegisterRequest): Observable<ApiResponse<AuthResponse>> {
+    return this.http.post<ApiResponse<AuthResponse>>(`${this.apiUrl}/register`, data)
+      .pipe(
+        tap(response => {
+          if (response.isSuccess && response.data) {
+            this.saveAuthData(response.data);
+          }
+        })
+      );
+  }
+
+  // تسجيل الخروج
+  logout() {
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
+    localStorage.removeItem('refreshToken');
+    this.currentUserSubject.next(null); // بنبلغ التطبيق كله إن المستخدم خرج
+    this.router.navigate(['/login']);
+  }
+
+  // --- Helper Methods ---
+
+  // التحقق هل المستخدم مسجل دخول ولا لأ (عشان الـ Guard)
+  isAuthenticated(): boolean {
+    // لازم يكون فيه توكن + بيانات يوزر في الـ State
+    return !!this.getToken() && !!this.currentUserSubject.value;
   }
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
 
-  isAuthenticated(): boolean {
-    return !!this.getToken() && !!this.currentUserSubject.value;
-  }
-
-  // يقوم فقط بالـ HTTP POST ويرجع الـ observable
-  login(email: string, password: string) {
-return this.http.post<AuthResponse>(`${environment.apiUrl}/api/Auth/login`, { email, password });
-  }
-
-  // بعد نجاح login، احفظ بيانات الـ auth (توكن + user)
-  saveAuthDataFromResponse(res: AuthResponse | any) {
-    const data = (res && res.data) ? res.data : res;
-    const token = data?.accessToken ?? data?.token ?? null;
-    if (token) {
-      localStorage.setItem(this.tokenKey, token);
+  // دالة مركزية لحفظ البيانات
+  private saveAuthData(data: AuthResponse) {
+    if (data.accessToken) {
+      localStorage.setItem(this.tokenKey, data.accessToken);
     }
-    if (data?.refreshToken) {
+    
+    if (data.refreshToken) {
       localStorage.setItem('refreshToken', data.refreshToken);
     }
-    if (data?.user) {
+    
+    if (data.user) {
       localStorage.setItem(this.userKey, JSON.stringify(data.user));
-      this.currentUserSubject.next(data.user);
+      this.currentUserSubject.next(data.user as AppUser); // تحديث الحالة
     }
   }
 
-  setCurrentUser(user: AppUser | null) {
-    if (user) localStorage.setItem(this.userKey, JSON.stringify(user));
-    else localStorage.removeItem(this.userKey);
-    this.currentUserSubject.next(user);
+  private readUserFromStorage(): AppUser | null {
+    try {
+      const raw = localStorage.getItem(this.userKey);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
   }
 
-  logout() {
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.userKey);
-    localStorage.removeItem('refreshToken');
-    this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
+  // Method to update current user (e.g., after profile picture upload)
+  setCurrentUser(user: AppUser | null) {
+    this.currentUserSubject.next(user);
+    if (user) {
+      localStorage.setItem(this.userKey, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(this.userKey);
+    }
   }
 }

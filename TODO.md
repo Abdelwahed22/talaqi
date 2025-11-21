@@ -1,3 +1,4 @@
-- [ ] Update navbar component to use AuthService's currentUser$ observable for reactivity
-- [ ] Update login component to use AuthService.login() method instead of direct HTTP calls
-- [ ] Test the login flow to ensure navbar updates with user profile image
+- [ ] Add setCurrentUser method to AuthService
+- [ ] Update navbar component to fully use currentUser$ observable, remove loadUser, and fix setCurrentUser call
+- [ ] Fix login component to use AuthService.login correctly and remove manual auth data saving
+- [ ] Run the application with ng serve
